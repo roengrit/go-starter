@@ -1,0 +1,62 @@
+basePath: /
+definitions:
+  entities.ErrorResponse:
+    properties:
+      code:
+        description: Response Code
+        type: string
+      error:
+        description: Response Error
+        type: string
+    type: object
+  entities.User:
+    properties:
+      id:
+        description: UserId
+        type: integer
+      name:
+        description: UserName
+        type: string
+    type: object
+  entities.Users:
+    properties:
+      data:
+        description: Users
+        items:
+          $ref: '#/definitions/entities.User'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: GM Startd API documentation
+  title: GM Startd API
+  version: "1.0"
+paths:
+  /healthcheck:
+    get:
+      description: Health checking for the service
+      operationId: HealthCheckHandler
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+  /users:
+    get:
+      description: Get Users
+      operationId: UsersHandler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Users'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+swagger: "2.0"
