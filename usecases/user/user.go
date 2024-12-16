@@ -3,6 +3,7 @@ package usecases
 import (
 	"gm-startd/database"
 	"gm-startd/entities"
+	"gm-startd/utils/password"
 )
 
 type userUseCase struct {
@@ -24,6 +25,12 @@ func (uc *userUseCase) GetByID(id int) (*entities.User, error) {
 }
 
 func (uc *userUseCase) CreateNew(user *entities.User) error {
+	// Hashing a password
+	hashedPassword, err := password.HashPassword(user.PasswordHash)
+	if err != nil {
+		return err
+	}
+	user.PasswordHash = hashedPassword
 	return uc.DB.CreateNew(user)
 }
 

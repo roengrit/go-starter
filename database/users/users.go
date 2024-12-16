@@ -32,7 +32,16 @@ func (repo *UserDB) GetAll() (*entities.Users, error) {
 	var users []entities.User
 	for rows.Next() {
 		var user entities.User
-		err := rows.Scan(&user.ID, &user.Name)
+		err := rows.Scan(
+			&user.ID,
+			&user.Username,
+			&user.Name,
+			&user.NickName,
+			&user.PasswordHash,
+			&user.Email,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +53,15 @@ func (repo *UserDB) GetAll() (*entities.Users, error) {
 
 func (repo *UserDB) GetByID(id int) (*entities.User, error) {
 	var user entities.User
-	err := repo.db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&user.ID, &user.Name)
+	err := repo.db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Name,
+		&user.NickName,
+		&user.PasswordHash,
+		&user.Email,
+		&user.CreatedAt,
+		&user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +70,27 @@ func (repo *UserDB) GetByID(id int) (*entities.User, error) {
 }
 
 func (repo *UserDB) CreateNew(user *entities.User) error {
-	_, err := repo.db.Exec("INSERT INTO users (id, name) VALUES ($1, $2)", user.ID, user.Name)
+
+	_, err := repo.db.Exec(`
+		INSERT INTO users (
+			username, 
+			name, 
+			nick_name,
+			password_hash,
+			email,
+			created_at,
+			updated_at,
+			last_login
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+		user.Username,
+		user.Name,
+		user.NickName,
+		user.PasswordHash,
+		user.Email,
+		user.CreatedAt,
+		user.UpdatedAt,
+		user.LastLogin,
+	)
 	return err
 }
 
@@ -61,3 +98,6 @@ func (repo *UserDB) DeleteByID(id int) error {
 	_, err := repo.db.Exec("DELETE FROM users WHERE id = $1", id)
 	return err
 }
+
+// Checking a password
+// isValid := password.CheckPassword("mySecurePassword123", hashedPassword)
