@@ -3,7 +3,7 @@ package routes
 
 import (
 	"gm-startd/entities"
-	"gm-startd/usecases"
+	usecases "gm-startd/usecases/user"
 	"net/http"
 	"strconv"
 

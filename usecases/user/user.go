@@ -3,7 +3,7 @@ package usecases
 import (
 	"gm-startd/database"
 	"gm-startd/entities"
-	"gm-startd/utils/password"
+	"gm-startd/shared/utils/password"
 )
 
 type userUseCase struct {
